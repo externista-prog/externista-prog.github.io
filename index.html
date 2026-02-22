@@ -29,14 +29,15 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            padding: 20px;
-            overflow: hidden;
+            padding: 15px;
+            overflow-x: hidden; /* Ochrana proti horizontálnímu rozpadu */
+            overflow-y: auto;   /* Propustnost na vertikální ose */
         }
 
         /* Scanline efekt - hloubka a atmosféra */
         body::before {
             content: "";
-            position: absolute;
+            position: fixed; /* Fixed místo absolute, aby scanlines zůstaly při scrollování statické */
             top: 0; left: 0; width: 100vw; height: 100vh;
             background: repeating-linear-gradient(
                 0deg,
@@ -61,6 +62,7 @@
             opacity: 0;
             transform: translateY(20px);
             animation: bootUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            margin: 20px 0; /* Vertikální buffer pro scrollování */
         }
 
         @keyframes bootUp {
@@ -92,8 +94,8 @@
 
         .telemetry-feed {
             width: 100%;
-            max-height: 250px;
-            object-fit: cover;
+            max-height: 300px; /* Zvýšeno pro lepší čitelnost na desktopu/tabletu */
+            object-fit: contain; /* Zajišťuje, že fotka se neořízne, ukáže se celá */
             border: 1px solid var(--border);
             margin: 15px 0;
             opacity: 0.9;
@@ -147,6 +149,44 @@
         }
         
         .error-state { color: var(--error); border-color: var(--error); }
+
+        /* --- FLUID DYNAMICS (MOBILE/IPAD RECALIBRATION) --- */
+        @media (max-width: 600px) {
+            body {
+                align-items: flex-start; /* Na telefonech vykresluj odshora, ne od středu */
+                padding: 10px;
+            }
+
+            .container {
+                padding: 25px 15px; /* Rekultivace prostoru na ose x */
+                border: none;
+                border-top: 1px solid var(--border);
+                border-bottom: 1px solid var(--border);
+                margin: 0; 
+                box-shadow: none; /* Odstranění stínu pro čistší zobrazení na malých obrazovkách */
+            }
+
+            h1 {
+                font-size: 1.2rem;
+                letter-spacing: 1px;
+            }
+
+            .telemetry-feed {
+                max-height: 200px; /* Limitace vertikální extenze obrazu pro mobily */
+            }
+
+            .option-block {
+                padding: 12px;
+                font-size: 0.85rem;
+            }
+
+            .metadata {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -206,7 +246,7 @@
                     titleEl.innerText = data.title;
                     idDisplay.innerText = `ID: ${id.toUpperCase()}`;
 
-                    // 1. Textový payload (zpracován jako první dle nové topologie)
+                    // 1. Textový payload 
                     descEl.innerHTML = data.desc; 
 
                     // 2. Vizuální payload
