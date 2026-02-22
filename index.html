@@ -33,7 +33,7 @@
             overflow: hidden;
         }
 
-        /* Scanline efekt */
+        /* Scanline efekt - hloubka a atmosféra */
         body::before {
             content: "";
             position: absolute;
@@ -79,7 +79,29 @@
 
         .content-block {
             margin-top: 20px;
+            margin-bottom: 20px;
             line-height: 1.6;
+        }
+
+        /* --- VISUAL DATA FEED --- */
+        #image-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        .telemetry-feed {
+            width: 100%;
+            max-height: 250px;
+            object-fit: cover;
+            border: 1px solid var(--border);
+            margin: 15px 0;
+            opacity: 0.9;
+            transition: opacity 0.3s ease;
+        }
+
+        .telemetry-feed:hover {
+            opacity: 1;
         }
 
         /* Pasivní bloky pro volby (Analog Logging) */
@@ -134,6 +156,7 @@
         
         <h1 id="title"></h1>
         <div id="description" class="content-block"></div>
+        <div id="image-container"></div>
         
         <div id="options-container" class="options-matrix"></div>
 
@@ -169,8 +192,9 @@
             const status = document.getElementById('status-indicator');
             const titleEl = document.getElementById('title');
             const descEl = document.getElementById('description');
-            const idDisplay = document.getElementById('id-display');
+            const imageContainer = document.getElementById('image-container');
             const optionsContainer = document.getElementById('options-container');
+            const idDisplay = document.getElementById('id-display');
 
             status.innerHTML = '> FETCHING JSON PAYLOAD...';
             const database = await fetchDatabase();
@@ -180,11 +204,28 @@
                     const data = database[id];
                     status.innerHTML = `> TARGET IDENTIFIED: ${id.toUpperCase()}`;
                     titleEl.innerText = data.title;
-                    descEl.innerHTML = data.desc; 
                     idDisplay.innerText = `ID: ${id.toUpperCase()}`;
 
-                    optionsContainer.innerHTML = '';
+                    // 1. Textový payload (zpracován jako první dle nové topologie)
+                    descEl.innerHTML = data.desc; 
 
+                    // 2. Vizuální payload
+                    imageContainer.innerHTML = ''; 
+                    if (data.image) {
+                        const img = document.createElement('img');
+                        img.src = data.image;
+                        img.className = 'telemetry-feed';
+                        img.alt = 'Vizuální záznam uzlu';
+                        
+                        img.onerror = () => {
+                            img.style.display = 'none';
+                            console.warn('Vizuální payload nedostupný. Fallback aktivován.');
+                        };
+                        imageContainer.appendChild(img);
+                    }
+
+                    // 3. Matice voleb
+                    optionsContainer.innerHTML = '';
                     if (data.options && data.options.length > 0) {
                         data.options.forEach(opt => {
                             const block = document.createElement('div');
@@ -206,6 +247,7 @@
                     descEl.innerText = FALLBACK.desc;
                     idDisplay.innerText = "ID: UNKNOWN";
                     terminal.style.borderColor = 'var(--error)';
+                    imageContainer.innerHTML = '';
                 }
             }, 400); 
         }
