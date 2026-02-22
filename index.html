@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZOH 2026 // SECURE TERMINAL</title>
+    <meta name="robots" content="noindex, nofollow">
+    
+    <style>
+        /* --- VISUAL CORE: The Void Terminal --- */
+        :root {
+            --bg-color: #050505;
+            --terminal-bg: #0a0a0a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #808080;
+            --accent: #00ff41; 
+            --error: #ff3333;
+            --border: #333;
+            --font-stack: 'SF Mono', 'Fira Code', 'Consolas', monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-stack);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* Scanline efekt */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 600px;
+            background: var(--terminal-bg);
+            border: 1px solid var(--border);
+            padding: 40px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.8);
+            opacity: 0;
+            transform: translateY(20px);
+            animation: bootUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes bootUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .content-block {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        /* Pasivní bloky pro volby (Analog Logging) */
+        .options-matrix {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 25px;
+        }
+
+        .option-block {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-primary);
+            padding: 15px;
+            text-align: left;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .option-block::before {
+            content: attr(data-key) "] ";
+            color: var(--accent);
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .metadata {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            border-top: 1px dashed var(--border);
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #status-indicator {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+        
+        .error-state { color: var(--error); border-color: var(--error); }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="terminal">
+        <div id="status-indicator">> INITIALIZING BOOT SEQUENCE...</div>
+        
+        <h1 id="title"></h1>
+        <div id="description" class="content-block"></div>
+        
+        <div id="options-container" class="options-matrix"></div>
+
+        <div class="metadata">
+            <span id="id-display">ID: NULL</span>
+            <span>SECURE_CONNECTION // ANALOG</span>
+        </div>
+    </div>
+
+    <script>
+        const FALLBACK = {
+            title: '404: ACCESS DENIED',
+            desc: 'Cílový identifikátor nebyl v databázi nalezen nebo je poškozený. Zkontrolujte integritu QR kódu.',
+            error: true
+        };
+
+        async function fetchDatabase() {
+            try {
+                const response = await fetch('./data.json');
+                if (!response.ok) throw new Error('Network structure collapse');
+                return await response.json();
+            } catch (error) {
+                console.error('Kritické selhání IO operace:', error);
+                return null;
+            }
+        }
+
+        async function init() {
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('q') || params.get('id');
+
+            const terminal = document.getElementById('terminal');
+            const status = document.getElementById('status-indicator');
+            const titleEl = document.getElementById('title');
+            const descEl = document.getElementById('description');
+            const idDisplay = document.getElementById('id-display');
+            const optionsContainer = document.getElementById('options-container');
+
+            status.innerHTML = '> FETCHING JSON PAYLOAD...';
+            const database = await fetchDatabase();
+
+            setTimeout(() => {
+                if (database && id && database[id]) {
+                    const data = database[id];
+                    status.innerHTML = `> TARGET IDENTIFIED: ${id.toUpperCase()}`;
+                    titleEl.innerText = data.title;
+                    descEl.innerHTML = data.desc; 
+                    idDisplay.innerText = `ID: ${id.toUpperCase()}`;
+
+                    optionsContainer.innerHTML = '';
+
+                    if (data.options && data.options.length > 0) {
+                        data.options.forEach(opt => {
+                            const block = document.createElement('div');
+                            block.className = 'option-block';
+                            block.setAttribute('data-key', opt.key);
+                            block.innerText = opt.text;
+                            
+                            optionsContainer.appendChild(block);
+                        });
+                        
+                        status.innerHTML = `> AWAITING MANUAL INPUT (ANALOG LOGGING REQUIRED)`;
+                        status.style.color = 'var(--text-secondary)';
+                    }
+                } else {
+                    status.innerText = "> CRITICAL FAILURE";
+                    status.classList.add('error-state');
+                    titleEl.innerText = FALLBACK.title;
+                    titleEl.style.color = 'var(--error)';
+                    descEl.innerText = FALLBACK.desc;
+                    idDisplay.innerText = "ID: UNKNOWN";
+                    terminal.style.borderColor = 'var(--error)';
+                }
+            }, 400); 
+        }
+
+        window.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
