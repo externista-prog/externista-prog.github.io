@@ -1,0 +1,106 @@
+{
+  "q_01": {
+    "title": "Otázka 01",
+    "image": "./assets/maskoti.jpg",
+    "desc": "Jak se jmenují maskoti ZOH 2026 a co symbolizují?",
+    "options": [
+      { "key": "a", "text": "Tony a Sofie = symbolizují dravost, hravost a propojení hudby" },
+      { "key": "b", "text": "Lili a Fifi = symbolizují soudržnost a kamarádství" },
+      { "key": "c", "text": "Tina a Milo = symbolizují inkluzi, radost a propojení sportu a kultury" }
+    ],
+    "correct": "c"
+  },
+  "q_02": {
+    "title": "Otázka 02",
+    "image": "./assets/olympijske_kruhy.jpg",
+    "desc": "Co znamenají olympijské kruhy?",
+    "options": [
+      { "key": "a", "text": "5 řek" },
+      { "key": "b", "text": "5 kontinentů" },
+      { "key": "c", "text": "5 zvířat" }
+    ],
+    "correct": "b"
+  },
+  "q_03": {
+    "title": "Otázka 03",
+    "desc": "Jak se jmenuje země, která pořádá ZOH 2026?",
+    "options": [
+      { "key": "a", "text": "Itálie" },
+      { "key": "b", "text": "Rumunsko" },
+      { "key": "c", "text": "Norsko" }
+    ],
+    "correct": "a"
+  },
+  "q_04": {
+    "title": "Otázka 04",
+    "desc": "Které sporty patří k ZOH?",
+    "options": [
+      { "key": "a", "text": "Atletika, volejbal, plavání" },
+      { "key": "b", "text": "Biatlon, hokej, skoky na lyžích" },
+      { "key": "c", "text": "Fotbal, hod oštěpem, skok do dálky" }
+    ],
+    "correct": "b"
+  },
+  "q_05": {
+    "title": "Otázka 05",
+    "desc": "Kdy začaly ZOH 2026?",
+    "options": [
+      { "key": "a", "text": "1. ledna 2026" },
+      { "key": "b", "text": "26. ledna 2026" },
+      { "key": "c", "text": "6. února 2026" }
+    ],
+    "correct": "c"
+  },
+  "q_06": {
+    "title": "Otázka 06",
+    "image": "./assets/olympijsky_ohen.jpg",
+    "desc": "Co je olympijský oheň?",
+    "options": [
+      { "key": "a", "text": "Symbol míru, přátelství a začátku olympijských her" },
+      { "key": "b", "text": "Symbol míru, zdraví" },
+      { "key": "c", "text": "Symbol propojení společnosti" }
+    ],
+    "correct": "a"
+  },
+  "q_07": {
+    "title": "Otázka 07",
+    "desc": "V jakých disciplínách soutěží Ester Ledecká?",
+    "options": [
+      { "key": "a", "text": "Boby, snowboarding" },
+      { "key": "b", "text": "Snowboarding, alpské lyžování" },
+      { "key": "c", "text": "Biatlon, sjezd na lyžích" }
+    ],
+    "correct": "b"
+  },
+  "q_08": {
+    "title": "Otázka 08",
+    "image": "./assets/pastrnak.jpg",
+    "desc": "Který sport reprezentuje subjekt na vizuálním záznamu (David Pastrňák)?",
+    "options": [
+      { "key": "a", "text": "Alpské lyžování" },
+      { "key": "b", "text": "Biatlon" },
+      { "key": "c", "text": "Hokej" }
+    ],
+    "correct": "c"
+  },
+  "q_09": {
+    "title": "Otázka 09",
+    "desc": "Co znamená hra fair play?",
+    "options": [
+      { "key": "a", "text": "Hrát čestně a podle pravidel" },
+      { "key": "b", "text": "Hrát jen tak, abych zvítězil" },
+      { "key": "c", "text": "Hrát i s podvodem" }
+    ],
+    "correct": "a"
+  },
+  "q_10": {
+    "title": "Otázka 10",
+    "desc": "Čemu se říká ve sportech „doping“?",
+    "options": [
+      { "key": "a", "text": "Hodnocení sportovců" },
+      { "key": "b", "text": "Zakázané látce, kterou nesmí sportovec použít" },
+      { "key": "c", "text": "Lékům na chřipku" }
+    ],
+    "correct": "b"
+  }
+}
